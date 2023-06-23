@@ -18,40 +18,64 @@ import (
 //  summary.WithLabelValues(r.HType()).Observe(time.Since(start).Seconds())
 // }()
 
-// type metrics struct {
-//     devices prometheus.Gauge
-// }
 
 type bmprovisioner_requests_total struct {
 	discover prometheus.Gauge
 	request  prometheus.Gauge
-	// relay_ip *prometheus.CounterVec
+}
+
+type bmprovisioner_responses_total struct {
+	ack prometheus.Gauge
+	nack  prometheus.Gauge
+	offer prometheus.Gauge
 }
 
 func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 	m := &bmprovisioner_requests_total{
 		discover: prometheus.NewGauge(prometheus.GaugeOpts{
 			Name: "discover_count",
-			Help: "123",
 		}),
 		request: prometheus.NewGauge(prometheus.GaugeOpts{
 			Name: "request_count",
-			Help: "123",
 		}),
 	}
 	reg.MustRegister(m.discover)
 	reg.MustRegister(m.request)
-	// reg.MustRegister(m.relay_ip)
 	return m
 }
 
-func recordMetrics(reg *prometheus.Registry) {
-	m := RequstMetric(reg)
+func ResponseMetric(reg prometheus.Registerer) *bmprovisioner_responses_total {
+	m := &bmprovisioner_responses_total{
+		ack: prometheus.NewGauge(prometheus.GaugeOpts{
+			Name: "ack_count",
+		}),
+		nack: prometheus.NewGauge(prometheus.GaugeOpts{
+			Name: "nack_count",
+		}),
+		offer: prometheus.NewGauge(prometheus.GaugeOpts{
+			Name: "offer_count",
+		}),
+	}
+	reg.MustRegister(m.ack)
+	reg.MustRegister(m.nack)
+	reg.MustRegister(m.offer)
+	return m
+}
+
+func emulatorRecordMetrics(reg *prometheus.Registry) {
+	req := RequstMetric(reg)
+	resp := ResponseMetric(reg)
 	go func() {
 		for {
-			m.discover.Add(10)
-			m.request.Add(20)
-			time.Sleep(2 * time.Second)
+			// requset
+			req.discover.Add(10)
+			req.request.Add(20)
+			// response
+			resp.ack.Inc()
+			resp.nack.Inc()
+			resp.offer.Inc()
+
+			time.Sleep(time.Second)
 		}
 	}()
 }
@@ -61,15 +85,7 @@ func main() {
 	reg := prometheus.NewRegistry()
 
 	// Create new metrics and register them using the custom registry.
-	recordMetrics(reg)
-	// m := RequstMetric(reg)
-	// Set values for the new created metrics.
-	// m.discover.Set(10)
-	// m.request.Set(20)
-	// m.relay_ip.With(prometheus.Labels{"ip":"1.1.1.1"}).Inc()
-
-	// Expose metrics and custom registry via an HTTP server
-	// using the HandleFor function. "/metrics" is the usual endpoint for that.
+	emulatorRecordMetrics(reg)
 	http.Handle("/test", promhttp.HandlerFor(reg, promhttp.HandlerOpts{Registry: reg}))
 	log.Fatal(http.ListenAndServe(":2112", nil))
 }
