@@ -22,6 +22,7 @@ import (
 type bmprovisioner_requests_total struct {
 	discover prometheus.Counter
 	request  prometheus.Counter
+	// relay_ip string
 }
 
 type bmprovisioner_responses_total struct {
@@ -39,8 +40,7 @@ func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 			Name: "request_count",
 		}),
 	}
-	reg.MustRegister(m.discover)
-	reg.MustRegister(m.request)
+	reg.MustRegister(m.discover, m.request)
 	return m
 }
 
@@ -56,9 +56,7 @@ func ResponseMetric(reg prometheus.Registerer) *bmprovisioner_responses_total {
 			Name: "offer_count",
 		}),
 	}
-	reg.MustRegister(m.ack)
-	reg.MustRegister(m.nack)
-	reg.MustRegister(m.offer)
+	reg.MustRegister(m.ack, m.nack, m.offer)
 	return m
 }
 
