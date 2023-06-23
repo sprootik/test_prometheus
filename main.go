@@ -20,22 +20,22 @@ import (
 
 
 type bmprovisioner_requests_total struct {
-	discover prometheus.Gauge
-	request  prometheus.Gauge
+	discover prometheus.Counter
+	request  prometheus.Counter
 }
 
 type bmprovisioner_responses_total struct {
-	ack prometheus.Gauge
-	nack  prometheus.Gauge
-	offer prometheus.Gauge
+	ack prometheus.Counter
+	nack  prometheus.Counter
+	offer prometheus.Counter
 }
 
 func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 	m := &bmprovisioner_requests_total{
-		discover: prometheus.NewGauge(prometheus.GaugeOpts{
+		discover: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "discover_count",
 		}),
-		request: prometheus.NewGauge(prometheus.GaugeOpts{
+		request: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "request_count",
 		}),
 	}
@@ -46,13 +46,13 @@ func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 
 func ResponseMetric(reg prometheus.Registerer) *bmprovisioner_responses_total {
 	m := &bmprovisioner_responses_total{
-		ack: prometheus.NewGauge(prometheus.GaugeOpts{
+		ack: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "ack_count",
 		}),
-		nack: prometheus.NewGauge(prometheus.GaugeOpts{
+		nack: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "nack_count",
 		}),
-		offer: prometheus.NewGauge(prometheus.GaugeOpts{
+		offer: prometheus.NewCounter(prometheus.CounterOpts{
 			Name: "offer_count",
 		}),
 	}
