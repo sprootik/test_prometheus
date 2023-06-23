@@ -34,9 +34,11 @@ type bmprovisioner_responses_total struct {
 func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 	m := &bmprovisioner_requests_total{
 		discover: prometheus.NewCounter(prometheus.CounterOpts{
+			Namespace: "req",
 			Name: "discover_count",
 		}),
 		request: prometheus.NewCounter(prometheus.CounterOpts{
+			Namespace: "req",
 			Name: "request_count",
 		}),
 	}
@@ -47,12 +49,15 @@ func RequstMetric(reg prometheus.Registerer) *bmprovisioner_requests_total {
 func ResponseMetric(reg prometheus.Registerer) *bmprovisioner_responses_total {
 	m := &bmprovisioner_responses_total{
 		ack: prometheus.NewCounter(prometheus.CounterOpts{
+			Namespace: "resp",
 			Name: "ack_count",
 		}),
 		nack: prometheus.NewCounter(prometheus.CounterOpts{
+			Namespace: "resp",
 			Name: "nack_count",
 		}),
 		offer: prometheus.NewCounter(prometheus.CounterOpts{
+			Namespace: "resp",
 			Name: "offer_count",
 		}),
 	}
