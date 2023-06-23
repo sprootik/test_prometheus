@@ -83,14 +83,14 @@ func emulatorRecordMetrics(reg *prometheus.Registry) {
 	go func() {
 		for {
 			// requset
-			req.discover.Add(10)
-			req.request.Add(10)
+			req.discover.Add(11)
+			req.request.Add(11)
 			req.relay_ip.With(prometheus.Labels{"relay_ip": "1.1.1.1"}).Add(10)
 			req.relay_ip.With(prometheus.Labels{"relay_ip": "2.2.2.2"}).Inc()
 			// response
-			resp.ack.Inc()
-			resp.nack.Inc()
-			resp.offer.Inc()
+			resp.ack.Add(11)
+			resp.nack.Add(11)
+			resp.offer.Add(11)
 			resp.relay_ip.With(prometheus.Labels{"relay_ip": "1.1.1.1"}).Inc()
 			resp.relay_ip.With(prometheus.Labels{"relay_ip": "2.2.2.2"}).Add(10)
 
